@@ -36,25 +36,22 @@ def randomize_weights_and_biases():
     r = np.random.default_rng()
     
     for neuron in h_layers[0]:
-        for i in range(0,784):
-            neuron.weights_in.append(r.random())
+        neuron.weights_in = r.random(784,)
         neuron.bias = r.random()
             
     for layer in h_layers[1:]:
         for neuron in layer:
-            for i in range(H_LAYER_SIZE):
-                neuron.weights_in.append(r.random())
+            neuron.weights_in = r.random(H_LAYER_SIZE,)
             neuron.bias = r.random()
         
     for neuron in final_layer:
-        for i in range(H_LAYER_SIZE):
-            neuron.weights_in.append(r.random())
+        neuron.weights_in = r.random(H_LAYER_SIZE,)
         neuron.bias = r.random()
 
 
 def run_one_image(images, index):
     for i in range(0,784):
-        input_layer[i].output = images[index][i]
+        input_layer[i].output = sigmoid(images[index][i])
         
     # Populate 1st hidden layer
     for i in range(0,H_LAYER_SIZE):
@@ -75,4 +72,8 @@ def run_one_image(images, index):
             [h_layers[H_LAYER_COUNT-1][j].output * final_layer[i].weights_in[j] for j in range(0,H_LAYER_SIZE)]
             ) + final_layer[i].bias)
         
-    return max(enumerate([final_layer[i].output for i in range(0,10)]))[0]
+    print(list(enumerate([(j,i) for (i,j) in enumerate([final_layer[i].output for i in range(0,10)])])))
+    print(list(enumerate([final_layer[i].output for i in range(0,10)])))
+    # Return index of maximal final neuron output
+    return max(enumerate([(j,i) for (i,j) in enumerate([final_layer[i].output for i in range(0,10)])]))[0]
+# TODO: read pixel number scaling 0-255 docs
